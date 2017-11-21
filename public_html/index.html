@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <title>OnTrack</title>
+         <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height:90%;
+        width: 50%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 10%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>  
+        <!-- Plotly.js -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="roslib.min.js"></script>
+        <script src="roslib.js"></script>
+        <script src="eventemitter2.js"></script>
+        <script src="OpenLayers.js"></script> 
+        <script src="three.js"></script>
+        <script src="ros3d.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+        <script type="text/javascript">        
+            // setup connection to the ROS server and prepare the topic
+            var ros = new ROSLIB.Ros({
+            url : 'ws://localhost:9090'
+            });
+            ros.on('connection', function() { console.log('Connected to websocket server.');});
+            ros.on('error', function(error) { console.log('Error connecting to websocket server: ', error); window.alert('Error connecting to websocket server'); });
+            ros.on('close', function() { console.log('Connection to websocket server closed.');});
+       
+    //List topics to subscribe
+      var gpsTopic = new ROSLIB.Topic({
+            ros : ros,
+            name : '/gps/fix'
+            //messageType : 'sensor_msgs/Imu'
+            }); 
+      var ontrackTopic = new ROSLIB.Topic({
+            ros:ros,
+            name : '/ontrack_messages'
+      });
+      ontrackTopic.subscribe(function(message) {
+          var depth_left = message.maxdepth_left;
+          document.getElementById("depth_left").value = depth_left;
+      });
+     function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros({
+      url : 'ws://128.39.58.197:9090'
+    });
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'viewer',
+      width : 600,
+      height : 300,
+      antialias : false,
+      background: '#A9A9A9'      
+    });
+    // Setup a client to listen to TFs.
+    var tfClient = new ROSLIB.TFClient({
+      ros : ros,
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0,
+      fixedFrame : '/laser'
+    });
+    var cloudClient = new ROS3D.PointCloud2({
+        ros: ros,
+        tfClient: tfClient,
+        rootObject: viewer.scene,
+        topic: '/cloud',
+        color:'#DC143C'
+    });
+  }
+      var map, infoWindow;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          //center: {lat: 59, lng: 10},
+          zoom:17,
+          mapTypeId: 'satellite'
+        });
+        infoWindow = new google.maps.InfoWindow;
+        var observation = 0;
+        var polygon = [];
+        gpsTopic.subscribe(function(message) {
+            var pos = {
+              lat: message.latitude,
+              lng: message.longitude
+            };
+            
+            observation = observation+1;
+            if (observation % 10 == 0){
+                polygon.push(pos);
+            var flightPath = new google.maps.Polyline({
+          path: polygon,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+                infoWindow.setPosition(pos);
+                infoWindow.setContent('OnTrack');
+                infoWindow.open(map);
+                map.setCenter(pos);
+            }          
+                       
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+         });
+    
+        }
+  
+  // Can plot on OSM too  
+    /*map = new OpenLayers.Map("Map");
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+    map.zoomToMaxExtent();
+    var zoom           = 13;
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+    var position_init       = new OpenLayers.LonLat(lon_i, lat_i).transform( fromProjection, toProjection);
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers);
+    markers.addMarker(new OpenLayers.Marker(position));
+    */
+      
+    </script>
+             
+    </head>
+    <body onload="init()">
+        <h1>OnTrack Localization</h1>
+        <img src="http://128.39.58.197:8080/stream?topic=/usb_cam/image_raw">
+        <div id="map" style="height:500px;width:500px"></div>
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>
+        <div id="plot"></div>
+        <div id='viewer'></div>
+        <input type="text" id="depth_left">
+        
+    </body>
+</html>
