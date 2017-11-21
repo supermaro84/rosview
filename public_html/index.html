@@ -34,9 +34,13 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
         <script type="text/javascript">        
+            var ip_addr = prompt("Please enter the ip adress of a robot");
+            var websocket = 'ws://';
+            var websocket = websocket.concat(ip_addr,':9090');
+            
             // setup connection to the ROS server and prepare the topic
             var ros = new ROSLIB.Ros({
-            url : 'ws://localhost:9090'
+            url : websocket
             });
             ros.on('connection', function() { console.log('Connected to websocket server.');});
             ros.on('error', function(error) { console.log('Error connecting to websocket server: ', error); window.alert('Error connecting to websocket server'); });
@@ -59,7 +63,7 @@ and open the template in the editor.
      function init() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
-      url : 'ws://128.39.58.197:9090'
+      url : websocket
     });
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
