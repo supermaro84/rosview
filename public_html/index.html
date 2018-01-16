@@ -8,6 +8,7 @@ and open the template in the editor.
     <head>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="style.css">
         <title>OnTrack</title>
          <style>
         /* Always set the map height explicitly to define the size of the div
@@ -17,26 +18,20 @@ and open the template in the editor.
         width: 50%;
       }
       /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 10%;
-        margin: 0;
-        padding: 0;
-      }
+  
     </style>  
-        <!-- Plotly.js -->
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script src="roslib.min.js"></script>
+    
+        <!--<script src="roslib.min.js"></script>-->
         <script src="roslib.js"></script>
         <script src="eventemitter2.js"></script>
         <script src="OpenLayers.js"></script> 
         <script src="three.js"></script>
         <script src="ros3d.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+ 
         <script type="text/javascript">        
-            var ip_addr = prompt("Please enter the ip adress of a robot");
+            var ip_addr = "localhost";
             var websocket = 'ws://';
-            var websocket = websocket.concat(ip_addr,':9090');
+            websocket = websocket.concat(ip_addr,':9090');
             
             // setup connection to the ROS server and prepare the topic
             var ros = new ROSLIB.Ros({
@@ -54,13 +49,69 @@ and open the template in the editor.
             }); 
       var ontrackTopic = new ROSLIB.Topic({
             ros:ros,
-            name : '/ontrack_messages'
+            name : '/ontrack_msgs'
       });
-      ontrackTopic.subscribe(function(message) {
+     ontrackTopic.subscribe(function(message) {
           var depth_left = message.maxdepth_left;
           document.getElementById("depth_left").value = depth_left;
       });
-     function init() {
+      
+      function get_color(points){
+          if (points >30){
+             color="green";
+         }
+         else {
+             color="red";
+         }
+         return color;
+      }
+      
+      var pointcl_fl=0;
+      var pointcl_fr=0;
+      var pointcl_rl=0;
+      var pointcl_rr=0;
+      var cloud_frl = new ROSLIB.Topic({
+          ros:ros,
+          name : '/cloud_fl'
+      });
+      cloud_frl.subscribe(function(message){
+         pointcl_fl=message.width;
+         document.getElementById("points_fl").innerHTML = pointcl_fl;
+         document.getElementById("front_l").style.background = get_color(pointcl_fl);
+      });
+      var cloud_frr = new ROSLIB.Topic({
+          ros:ros,
+          name : '/cloud_fr'
+      });
+      cloud_frr.subscribe(function(message){
+         pointcl_fr=message.width;
+         document.getElementById("points_fr").innerHTML = pointcl_fr;
+         document.getElementById("front_r").style.background = get_color(pointcl_fr);
+
+      });
+      var cloud_rrl = new ROSLIB.Topic({
+          ros:ros,
+          name : '/cloud_rl'
+      });
+      cloud_rrl.subscribe(function(message){
+         pointcl_rl=message.width;
+         document.getElementById("points_rl").innerHTML = pointcl_rl;
+         document.getElementById("rear_l").style.background = get_color(pointcl_rl);
+
+      });
+      var cloud_rrr = new ROSLIB.Topic({
+          ros:ros,
+          name : '/cloud_rr'
+      });
+      cloud_rrr.subscribe(function(message){
+         pointcl_rr=message.width;
+         document.getElementById("points_rr").innerHTML = pointcl_rr;
+         document.getElementById("rear_r").style.background = get_color(pointcl_rr);
+
+      });
+
+
+    function init() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
       url : websocket
@@ -68,26 +119,61 @@ and open the template in the editor.
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
       divID : 'viewer',
-      width : 600,
-      height : 300,
+      width : 1100,
+      height : 800,
       antialias : false,
       background: '#A9A9A9'      
     });
+   
+    var orbit = new ROS3D.OrbitControls({
+        scene : viewer.scene,
+        camera : viewer.camera
+    });
+    orbit.zoomOut(4);
+    orbit.update();
+    //viewer.addObject(orbit.zoomOut(50));
+    viewer.addObject(new ROS3D.Grid());
     // Setup a client to listen to TFs.
     var tfClient = new ROSLIB.TFClient({
       ros : ros,
       angularThres : 0.01,
       transThres : 0.01,
-      rate : 10.0,
-      fixedFrame : '/laser'
+      rate : 5.0,
+      fixedFrame : '/front_frame'
     });
-    var cloudClient = new ROS3D.PointCloud2({
+    var cloudClient1 = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud',
-        color:'#DC143C'
+        topic: '/cloud_rr',
+        color:'red',
+        size: 0.1
     });
+    var cloudClient2 = new ROS3D.PointCloud2({
+        ros: ros,
+        tfClient: tfClient,
+        rootObject: viewer.scene,
+        topic: '/cloud_rl',
+        color:'green',
+        size: 0.1
+    });
+    var cloudClient3 = new ROS3D.PointCloud2({
+        ros: ros,
+        tfClient: tfClient,
+        rootObject: viewer.scene,
+        topic: '/cloud_fr',
+        color:'yellow',
+        size: 0.1
+    });
+    var cloudClient4 = new ROS3D.PointCloud2({
+        ros: ros,
+        tfClient: tfClient,
+        rootObject: viewer.scene,
+        topic: '/cloud_fl',
+        color:'blue',
+        size: 0.1
+    });
+    
   }
       var map, infoWindow;
       function initMap() {
@@ -104,26 +190,26 @@ and open the template in the editor.
               lat: message.latitude,
               lng: message.longitude
             };
-            
-            observation = observation+1;
-            if (observation % 10 == 0){
-                polygon.push(pos);
-            var flightPath = new google.maps.Polyline({
-          path: polygon,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
 
-        flightPath.setMap(map);
+          //  observation = observation+1;
+          //  if (observation % 10 == 0){
+          //      polygon.push(pos);
+          //  var flightPath = new google.maps.Polyline({
+         // path: polygon,
+        //  geodesic: true,
+        //  strokeColor: '#FF0000',
+        //  strokeOpacity: 1.0,
+        //  strokeWeight: 2
+       // });
+
+        //flightPath.setMap(map);
                 infoWindow.setPosition(pos);
                 infoWindow.setContent('OnTrack');
                 infoWindow.open(map);
                 map.setCenter(pos);
             }          
                        
-          }, function() {
+          , function() {
             handleLocationError(true, infoWindow, map.getCenter());
          });
     
@@ -143,19 +229,37 @@ and open the template in the editor.
     map.addLayer(markers);
     markers.addMarker(new OpenLayers.Marker(position));
     */
-      
+   
     </script>
              
     </head>
     <body onload="init()">
         <h1>OnTrack Localization</h1>
-        <img src="http://128.39.58.197:8080/stream?topic=/usb_cam/image_raw">
-        <div id="map" style="height:500px;width:500px"></div>
-        <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>
-        <div id="plot"></div>
         <div id='viewer'></div>
-        <input type="text" id="depth_left">
+        <img src="http://localhost:8080/stream?topic=/usb_cam/image_raw">
         
+        
+        <div id="map" style="height:500px;width:500px"></div>
+       <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>
+        <div id = "front_l">
+            <h1>FRONT LEFT</h1>
+            <span id="points_fl"></span>
+        </div>
+        <div id = "front_r">
+            <h1>FRONT RIGHT</h1>
+            <span id="points_fr"></span>
+
+        </div>
+        <div id = "rear_l" style="">
+            <h1>REAR LEFT</h1>
+            <span id="points_rl"></span>
+        </div>
+        <div id = "rear_r">
+            <h1>REAR RIGHT</h1>
+            <span id="points_rr"></span>
+
+        </div>
+
     </body>
 </html>
