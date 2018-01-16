@@ -1,0 +1,87 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 29, 2017, 11:39:01 AM
+    Author     : marek
+*/
+body {
+    background-color: #cccccc;
+   
+}
+
+#cam_front {
+    height:400px;
+    left:0;
+}
+    #viewer {
+        float: right;
+    }
+    #map {
+        float:left;
+    }
+
+#front_l {
+    position: fixed;
+    bottom:300px;
+    left:0;
+    width: 400px;
+    border: 25px solid blue;
+    padding: 25px;
+    margin: 25px;
+    background: grey;
+
+}
+
+#front_r {
+    position: fixed;
+    bottom:300px;
+    left:550px;
+    width: 400px;
+    border: 25px solid yellow;
+    padding: 25px;
+    margin: 25px;
+    background: grey;
+
+}
+
+#rear_l {
+    position: fixed;
+    bottom:0;
+    left:0px;
+    width: 400px;
+    border: 25px solid green;
+    padding: 25px;
+    margin: 25px;
+    background: grey;
+}
+
+#rear_r {
+    position: fixed;
+    bottom:0;
+    left:550px;
+    width: 400px;
+    border: 25px solid red;
+    padding: 25px;
+    margin: 25px;
+    background: grey;
+
+}
+#points_fl{
+    font-size:300%;
+    font-family: "Serif"
+}
+#points_fr{
+    font-size:300%;
+    font-family: "Serif"
+}
+#points_rl{
+    font-size:300%;
+    font-family: "Serif"
+}
+#points_rr{
+    font-size:300%;
+    font-family: "Serif"
+}
