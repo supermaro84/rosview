@@ -9,7 +9,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
         <META HTTP-EQUIV="refresh" CONTENT="300"> 
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="style_full.css">
         <title>OnTrack</title>
          <style>
         /* Always set the map height explicitly to define the size of the div
@@ -21,27 +21,16 @@ and open the template in the editor.
       /* Optional: Makes the sample page fill the window. */
   
     </style>  
-    <style> 
-front_r {
-    width: 100px;
-    height: 100px;
-    animation: example 1s infinite;
-    }
-
-/* Standard syntax */
-@-webkit-keyframes example {
-    from {background-color: red;}
-    to {background-color: yellow;}
-}
-</style>   
+    
         <!--<script src="roslib.min.js"></script>-->
         <script src="roslib.js"></script>
         <script src="eventemitter2.js"></script>
         <script src="OpenLayers.js"></script> 
         <script src="three.js"></script>
         <script src="ros3d.js"></script>
+
         <script type="text/javascript">        
-            var ip_addr = "localhost";
+            var ip_addr = "192.168.2.101";
             var websocket = 'ws://';
             websocket = websocket.concat(ip_addr,':9090');
             
@@ -67,17 +56,18 @@ front_r {
           var depth_left = message.maxdepth_left;
           document.getElementById("depth_left").value = depth_left;
       });
-
+      
       function get_color(points){
           if (points >30){
              color="green";
          }
          else {
+             
              color="red";
          }
          return color;
       }
-      
+            
       var pointcl_fl=0;
       var pointcl_fr=0;
       var pointcl_rl=0;
@@ -153,7 +143,7 @@ front_r {
       angularThres : 0.01,
       transThres : 0.01,
       rate : 5.0,
-      fixedFrame : '/front_frame'
+      fixedFrame : '/velodyne'
     });
     var cloudClient1 = new ROS3D.PointCloud2({
         ros: ros,
@@ -183,7 +173,7 @@ front_r {
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_fl',
+        topic: '/velodyne_points',
         color:'blue',
         size: 0.1
     });
@@ -194,7 +184,7 @@ front_r {
         map = new google.maps.Map(document.getElementById('map'), {
           //center: {lat: 59, lng: 10},
           zoom:16,
-          mapTypeId: 'satellite'
+          mapTypeId: 'terrain'
         });
         infoWindow = new google.maps.InfoWindow;
         var observation = 0;
@@ -245,22 +235,20 @@ front_r {
     */
    
     </script>
-      
+             
     </head>
-
     <body onload="init()">
         <h1 align="center"><img src="OnTrack_logo4.png" alt='logo' height="40"></h1>
         <div id='viewer'></div>
-      <!--  <img src="http://192.168.2.101:8080/stream?topic=/usb_cam/image_raw" style="height:200px">
+        <img src="http://192.168.2.101:8080/stream?topic=/usb_cam/image_raw" style="height:200px">
         
         
-    <!--    <div id="map" style="height:200px;width:200px"></div>
+        <div id="map" style="height:200px;width:200px"></div>
        <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>-->
-    <form action="fullversion.html">
-    <input id="buttonver" type="submit" value="full version" />
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>
+    <form action="index.html">
+    <input type="submit" value="Display" />
 </form>
-    
         <div id = "front_l">
             <strong>FRONT L</strong> 
             <span id="points_fl"></span>

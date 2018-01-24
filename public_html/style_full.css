@@ -4,6 +4,16 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 /* 
+    Created on : Jan 22, 2018, 10:36:22 AM
+    Author     : marek
+*/
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
     Created on : Nov 29, 2017, 11:39:01 AM
     Author     : marek
 */
@@ -26,10 +36,10 @@ body {
 
 #front_l {
     position: fixed;
-    bottom:35%;
+    bottom:20%;
     left:0%;
-    width: 20%;
-    height:25%;
+    width: 8%;
+    height:8%;
     border: 5px solid blue;
     padding: 5px;
     margin: 2px;
@@ -39,10 +49,10 @@ body {
 
 #front_r {
     position: fixed;
-    bottom:35%;
-    left:25%;
-    width: 20%;
-    height:25%;
+    bottom:20%;
+    left:15%;
+    width: 8%;
+    height:8%;
     border: 5px solid yellow;
     padding: 5px;
     margin: 2px;
@@ -54,8 +64,8 @@ body {
     position: fixed;
     bottom:0%;
     left:0%;
-    width: 20%;
-    height:25%;
+    width: 8%;
+    height:8%;
     border: 5px solid green;
     padding: 5px;
     margin: 2px;
@@ -65,9 +75,9 @@ body {
 #rear_r {
     position: fixed;
     bottom:0%;
-    left:25%;
-    width: 20%;
-    height:25%;
+    left:15%;
+    width: 8%;
+    height:8%;
     border: 5px solid red;
     padding: 5px;
     margin: 2px;
@@ -91,35 +101,16 @@ body {
     font-family: "Serif"
 }
 #button {
-    background-color: magenta; /* Green */
+    background-color: #4CAF50; /* Green */
     border: none;
     position:fixed;
-    top:15%;
-    left:25%;
+    bottom:5%;
+    left:32%;
     color: white;
-    height: 20px;
-    width: 23%;
     padding: 40px 40px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 26px;
     
-}
-
-#buttonver {
-    background-color: magenta; /* Green */
-    border: none;
-    position:fixed;
-    top:15%;
-    left:0%;
-    color: white;
-    height: 20px;
-    width: 23%;
-    padding: 40px 40px;
-    text-align: center;
-    vertical-align: middle;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 26px;
 }
