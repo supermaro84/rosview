@@ -143,7 +143,7 @@ and open the template in the editor.
       angularThres : 0.01,
       transThres : 0.01,
       rate : 5.0,
-      fixedFrame : '/velodyne'
+      fixedFrame : '/front_frame'
     });
     var cloudClient1 = new ROS3D.PointCloud2({
         ros: ros,
@@ -173,7 +173,7 @@ and open the template in the editor.
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/velodyne_points',
+        topic: '/cloud_fl',
         color:'blue',
         size: 0.1
     });

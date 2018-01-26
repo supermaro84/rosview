@@ -41,7 +41,7 @@ front_r {
         <script src="three.js"></script>
         <script src="ros3d.js"></script>
         <script type="text/javascript">        
-            var ip_addr = "localhost";
+            var ip_addr = "192.168.0.6";
             var websocket = 'ws://';
             websocket = websocket.concat(ip_addr,':9090');
             
@@ -84,7 +84,7 @@ front_r {
       var pointcl_rr=0;
       var cloud_frl = new ROSLIB.Topic({
           ros:ros,
-          name : '/cloud_fl'
+          name : '/cloud_front_left'
       });
       
       cloud_frl.subscribe(function(message){
@@ -94,7 +94,7 @@ front_r {
       });
       var cloud_frr = new ROSLIB.Topic({
           ros:ros,
-          name : '/cloud_fr'
+          name : '/cloud_front_right'
       });
       cloud_frr.subscribe(function(message){
          pointcl_fr=message.width;
@@ -104,7 +104,7 @@ front_r {
       });
       var cloud_rrl = new ROSLIB.Topic({
           ros:ros,
-          name : '/cloud_rl'
+          name : '/cloud_rear_left'
       });
       cloud_rrl.subscribe(function(message){
          pointcl_rl=message.width;
@@ -114,7 +114,7 @@ front_r {
       });
       var cloud_rrr = new ROSLIB.Topic({
           ros:ros,
-          name : '/cloud_rr'
+          name : '/cloud_rear_right'
       });
       cloud_rrr.subscribe(function(message){
          pointcl_rr=message.width;
@@ -153,13 +153,13 @@ front_r {
       angularThres : 0.01,
       transThres : 0.01,
       rate : 5.0,
-      fixedFrame : '/front_frame'
+      fixedFrame : '/frame_front'
     });
     var cloudClient1 = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_rr',
+        topic: '/cloud_rear_right',
         color:'red',
         size: 0.1
     });
@@ -167,7 +167,7 @@ front_r {
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_rl',
+        topic: '/cloud_rear_left',
         color:'green',
         size: 0.1
     });
@@ -175,7 +175,7 @@ front_r {
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_fr',
+        topic: '/cloud_front_right',
         color:'yellow',
         size: 0.1
     });
@@ -183,7 +183,7 @@ front_r {
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_fl',
+        topic: '/cloud_front_left',
         color:'blue',
         size: 0.1
     });
