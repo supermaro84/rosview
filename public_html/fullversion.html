@@ -30,7 +30,7 @@ and open the template in the editor.
         <script src="ros3d.js"></script>
 
         <script type="text/javascript">        
-            var ip_addr = "192.168.2.101";
+            var ip_addr = "localhost";
             var websocket = 'ws://';
             websocket = websocket.concat(ip_addr,':9090');
             
@@ -45,7 +45,7 @@ and open the template in the editor.
     //List topics to subscribe
       var gpsTopic = new ROSLIB.Topic({
             ros : ros,
-            name : '/gps/fix'
+            name : '/dji_sdk/gps_position'
             //messageType : 'sensor_msgs/Imu'
             }); 
       var ontrackTopic = new ROSLIB.Topic({
