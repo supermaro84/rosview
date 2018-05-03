@@ -122,8 +122,8 @@ and open the template in the editor.
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
       divID : 'viewer',
-      width : 300,
-      height : 380,
+      width : 550,
+      height : 480,
       antialias : false,
       loader : ROS3D.COLLADA_LOADER_2,
       background: '#A9A9A9'      
@@ -240,6 +240,7 @@ and open the template in the editor.
     <body onload="init()">
         <h1 align="center"><img src="OnTrack_logo4.png" alt='logo' height="40"></h1>
         <div id='viewer'></div>
+        <div id='cam_front'></div>
         <img src="http://192.168.0.111:8080/stream?topic=/usb_cam/image_raw">
         
         

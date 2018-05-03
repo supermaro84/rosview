@@ -23,16 +23,19 @@ body {
 }
 
 #cam_front {
-    height:400px;
+    height:0px;
     left:0;
 }
-    #viewer {
-        float: right;
-        height:300px;
-    }
-    #map {
+#viewer {
         float:right;
-        height:30%;
+        width:550px;
+        size: 30px;
+    }
+#map {
+        float:right;
+        height:0;
+        width:400px;
+        height:300px;
     }
 
 #front_l {
