@@ -28,9 +28,10 @@ body {
 }
     #viewer {
         float: right;
+        height:300px;
     }
     #map {
-        float:left;
+        float:right;
         height:30%;
     }
 

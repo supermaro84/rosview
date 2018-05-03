@@ -30,7 +30,7 @@ and open the template in the editor.
         <script src="ros3d.js"></script>
 
         <script type="text/javascript">        
-            var ip_addr = "localhost";
+            var ip_addr = '192.168.0.111';
             var websocket = 'ws://';
             websocket = websocket.concat(ip_addr,':9090');
             
@@ -45,7 +45,7 @@ and open the template in the editor.
     //List topics to subscribe
       var gpsTopic = new ROSLIB.Topic({
             ros : ros,
-            name : '/dji_sdk/gps_position'
+            name : '/gps/fix'
             //messageType : 'sensor_msgs/Imu'
             }); 
       var ontrackTopic = new ROSLIB.Topic({
@@ -143,13 +143,13 @@ and open the template in the editor.
       angularThres : 0.01,
       transThres : 0.01,
       rate : 5.0,
-      fixedFrame : '/front_frame'
+      fixedFrame : '/imu'
     });
     var cloudClient1 = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_rr',
+        topic: '/cloud_left',
         color:'red',
         size: 0.1
     });
@@ -157,7 +157,7 @@ and open the template in the editor.
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/cloud_rl',
+        topic: '/cloud_right',
         color:'green',
         size: 0.1
     });
@@ -240,10 +240,10 @@ and open the template in the editor.
     <body onload="init()">
         <h1 align="center"><img src="OnTrack_logo4.png" alt='logo' height="40"></h1>
         <div id='viewer'></div>
-        <img src="http://192.168.2.101:8080/stream?topic=/usb_cam/image_raw" style="height:200px">
+        <img src="http://192.168.0.111:8080/stream?topic=/usb_cam/image_raw">
         
         
-        <div id="map" style="height:200px;width:200px"></div>
+        <div id="map" style="height:300px;width:600px"></div>
        <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>
     <form action="index.html">
