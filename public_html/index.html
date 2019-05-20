@@ -10,7 +10,7 @@ and open the template in the editor.
         <meta charset="utf-8">
         <META HTTP-EQUIV="refresh" CONTENT="300"> 
         <link rel="stylesheet" type="text/css" href="style.css">
-        <title>OnTrack</title>
+        <title>Infralytiks</title>
          <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -23,8 +23,8 @@ and open the template in the editor.
     </style>  
     <style> 
 front_r {
-    width: 100px;
-    height: 100px;
+    width: 300px;
+    height: 600px;
     animation: example 1s infinite;
     }
 
@@ -40,216 +40,13 @@ front_r {
         <script src="OpenLayers.js"></script> 
         <script src="three.js"></script>
         <script src="ros3d.js"></script>
-        <script type="text/javascript">        
-            var ip_addr = "ontrack.pagekite.me";
-            var websocket = 'ws://';
-            websocket = websocket.concat(ip_addr,':9090');
-            
-            // setup connection to the ROS server and prepare the topic
-            var ros = new ROSLIB.Ros({
-            url : websocket
-            });
-            ros.on('connection', function() { console.log('Connected to websocket server.');});
-            ros.on('error', function(error) { console.log('Error connecting to websocket server: ', error); window.alert('Error connecting to websocket server'); });
-            ros.on('close', function() { console.log('Connection to websocket server closed.');});
-       
-    //List topics to subscribe
-      var gpsTopic = new ROSLIB.Topic({
-            ros : ros,
-            name : '/gps/fix'
-            //messageType : 'sensor_msgs/Imu'
-            }); 
-      var ontrackTopic = new ROSLIB.Topic({
-            ros:ros,
-            name : '/ontrack_msgs'
-      });
-     ontrackTopic.subscribe(function(message) {
-          var depth_left = message.maxdepth_left;
-          document.getElementById("depth_left").value = depth_left;
-      });
-
-      function get_color(points){
-          if (points >30){
-             color="green";
-         }
-         else {
-             color="red";
-         }
-         return color;
-      }
-      
-      var pointcl_fl=0;
-      var pointcl_fr=0;
-      var pointcl_rl=0;
-      var pointcl_rr=0;
-      var cloud_frl = new ROSLIB.Topic({
-          ros:ros,
-          name : '/cloud_front_left'
-      });
-      
-      cloud_frl.subscribe(function(message){
-         pointcl_fl=message.width;
-         document.getElementById("points_fl").innerHTML = pointcl_fl;
-         document.getElementById("front_l").style.background = get_color(pointcl_fl);
-      });
-      var cloud_frr = new ROSLIB.Topic({
-          ros:ros,
-          name : '/cloud_front_right'
-      });
-      cloud_frr.subscribe(function(message){
-         pointcl_fr=message.width;
-         document.getElementById("points_fr").innerHTML = pointcl_fr;
-         document.getElementById("front_r").style.background = get_color(pointcl_fr);
-
-      });
-      var cloud_rrl = new ROSLIB.Topic({
-          ros:ros,
-          name : '/cloud_rear_left'
-      });
-      cloud_rrl.subscribe(function(message){
-         pointcl_rl=message.width;
-         document.getElementById("points_rl").innerHTML = pointcl_rl;
-         document.getElementById("rear_l").style.background = get_color(pointcl_rl);
-
-      });
-      var cloud_rrr = new ROSLIB.Topic({
-          ros:ros,
-          name : '/cloud_rear_right'
-      });
-      cloud_rrr.subscribe(function(message){
-         pointcl_rr=message.width;
-         document.getElementById("points_rr").innerHTML = pointcl_rr;
-         document.getElementById("rear_r").style.background = get_color(pointcl_rr);
-
-      });
-
-
-    function init() {
-    // Connect to ROS.
-    var ros = new ROSLIB.Ros({
-      url : websocket
-    });
-    // Create the main viewer.
-    var viewer = new ROS3D.Viewer({
-      divID : 'viewer',
-      width : 300,
-      height : 380,
-      antialias : false,
-      loader : ROS3D.COLLADA_LOADER_2,
-      background: '#A9A9A9'      
-    });
-   
-    var orbit = new ROS3D.OrbitControls({
-        scene : viewer.scene,
-        camera : viewer.camera
-    });
-    orbit.zoomOut(4);
-    orbit.update();
-    //viewer.addObject(orbit.zoomOut(50));
-    viewer.addObject(new ROS3D.Grid());
-    // Setup a client to listen to TFs.
-    var tfClient = new ROSLIB.TFClient({
-      ros : ros,
-      angularThres : 0.01,
-      transThres : 0.01,
-      rate : 5.0,
-      fixedFrame : '/frame_front'
-    });
-    var cloudClient1 = new ROS3D.PointCloud2({
-        ros: ros,
-        tfClient: tfClient,
-        rootObject: viewer.scene,
-        topic: '/cloud_rear_right',
-        color:'red',
-        size: 0.1
-    });
-    var cloudClient2 = new ROS3D.PointCloud2({
-        ros: ros,
-        tfClient: tfClient,
-        rootObject: viewer.scene,
-        topic: '/cloud_rear_left',
-        color:'green',
-        size: 0.1
-    });
-    var cloudClient3 = new ROS3D.PointCloud2({
-        ros: ros,
-        tfClient: tfClient,
-        rootObject: viewer.scene,
-        topic: '/cloud_front_right',
-        color:'yellow',
-        size: 0.1
-    });
-    var cloudClient4 = new ROS3D.PointCloud2({
-        ros: ros,
-        tfClient: tfClient,
-        rootObject: viewer.scene,
-        topic: '/cloud_front_left',
-        color:'blue',
-        size: 0.1
-    });
-    
-  }
-      var map, infoWindow;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          //center: {lat: 59, lng: 10},
-          zoom:16,
-          mapTypeId: 'satellite'
-        });
-        infoWindow = new google.maps.InfoWindow;
-        var observation = 0;
-        var polygon = [];
-        gpsTopic.subscribe(function(message) {
-            var pos = {
-              lat: message.latitude,
-              lng: message.longitude
-            };
-
-          //  observation = observation+1;
-          //  if (observation % 10 == 0){
-          //      polygon.push(pos);
-          //  var flightPath = new google.maps.Polyline({
-         // path: polygon,
-        //  geodesic: true,
-        //  strokeColor: '#FF0000',
-        //  strokeOpacity: 1.0,
-        //  strokeWeight: 2
-       // });
-
-        //flightPath.setMap(map);
-                infoWindow.setPosition(pos);
-                infoWindow.setContent('OnTrack');
-                infoWindow.open(map);
-                map.setCenter(pos);
-            }          
-                       
-          , function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-         });
-    
-        }
-  
-  // Can plot on OSM too  
-    /*map = new OpenLayers.Map("Map");
-    var mapnik         = new OpenLayers.Layer.OSM();
-    map.addLayer(mapnik);
-    map.zoomToMaxExtent();
-    var zoom           = 13;
-    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
-    var position_init       = new OpenLayers.LonLat(lon_i, lat_i).transform( fromProjection, toProjection);
-    var markers = new OpenLayers.Layer.Markers( "Markers" );
-    map.addLayer(markers);
-    markers.addMarker(new OpenLayers.Marker(position));
-    */
-   
-    </script>
+        <script src="controlrec.js"></script>
+        
       
     </head>
 
     <body onload="init()">
-        <h1 align="center"><img src="OnTrack_logo4.png" alt='logo' height="40"></h1>
+        <h1 align="center"><img src="tb.jpg" alt='logo' height="80"></h1>
         <div id='viewer'></div>
       <!--  <img src="http://192.168.2.101:8080/stream?topic=/usb_cam/image_raw" style="height:200px">
         
@@ -257,30 +54,44 @@ front_r {
     <!--    <div id="map" style="height:200px;width:200px"></div>
        <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>-->
-    <form action="fullversion.html">
-    <input id="buttonver" type="submit" value="full version" />
+    <form action="/downloads">
+    <input id="filesbutton" type="submit" value="show files" />
 </form>
-    
-        <div id = "front_l">
-            <strong>FRONT L</strong> 
-            <span id="points_fl"></span>
-        </div>
-        <div id = "front_r">
-            <strong>FRONT R</strong> 
-            <span id="points_fr"></span>
+    <FORM>
+    <INPUT id="refreshbutton" TYPE="button" onClick="history.go(0)" VALUE="Refresh">
+    </FORM>
+         <table id="sensors">
+  <tr>
+    <th>Sensor</th>
+    <th>Topic</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Velodyne</td>
+    <td>Points in cloud </td>
+    <td id="points_count"></td>
+  </tr>
+  <tr>
+    <td>DJI</td>
+    <td>GPS </td>
+    <td id="djigps"></td>
+  </tr>
+  <tr>
+    <td>DJI</td>
+    <td>IMU </td>
+    <td id="djiimu"></td>
+  </tr>
+  <tr>
+    <td>VectorNav</td>
+    <td>GPS </td>
+    <td id="vngps"></td>
+  </tr>
+  <tr>
+    <td>Vectornav</td>
+    <td>GPS </td>
+    <td id="vnimu"></td>
+  </tr>
+</table> 
 
-        </div>
-        <div id = "rear_l">
-            <strong>REAR L</strong> 
-            <span id="points_rl"></span>
-        </div>
-        <div id = "rear_r">
-            <strong>REAR R</strong> 
-            <span id="points_rr"></span>
-
-        </div>
-        <FORM>
-        <INPUT id="button" TYPE="button" onClick="history.go(0)" VALUE="Refresh">
-        </FORM>
     </body>
 </html>
