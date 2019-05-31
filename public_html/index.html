@@ -10,31 +10,15 @@ and open the template in the editor.
         <meta charset="utf-8">
         <META HTTP-EQUIV="refresh" CONTENT="300"> 
         <link rel="stylesheet" type="text/css" href="style.css">
-        <title>Infralytiks</title>
+        <title>Scanning control interface</title>
          <style>
-        /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
       #map {
         height:40%;
         width: 20%;
       }
       /* Optional: Makes the sample page fill the window. */
   
-    </style>  
-    <style> 
-front_r {
-    width: 300px;
-    height: 600px;
-    animation: example 1s infinite;
-    }
-
-/* Standard syntax */
-@-webkit-keyframes example {
-    from {background-color: red;}
-    to {background-color: yellow;}
-}
-</style>   
-        <!--<script src="roslib.min.js"></script>-->
+        </style>  
         <script src="roslib.js"></script>
         <script src="eventemitter2.js"></script>
         <script src="OpenLayers.js"></script> 
@@ -46,59 +30,75 @@ front_r {
     </head>
 
     <body onload="init()">
-        <h1 align="center"><img src="tb.jpg" alt='logo' height="80"></h1>
-        <div id='viewer'></div>
+        
+        <div id="container">
+            <div id="logo">
+                <h1 align="left"><img src="tb.jpg" alt='logo' height="80"> SCANNING CONTROL INTERFACE</h1>
+                
+            </div>
+            <div id="manip">
+                <FORM>
+                    <INPUT id="refreshbutton" TYPE="button" onClick="history.go(0)" VALUE="Refresh">
+                </FORM>
+                <form action="/downloads" target="_blank" title="go to files">
+                    <input id="filesbutton" type="submit" value="show files" />
+                </form>
+                <div id="recstatus">
+                    Record status                                       
+                    <a id="recordingstatus"></a>
+                </div>
+            
+            </div>
+            <div id="sensortable">
+                         <table id="sensors">
+                             <tr id="firstcol">
+                                 <th>Device</th>
+                                 <th>Topic</th>
+                                 <th>Value</th>
+                            </tr>
+                            <tr>
+                                <td>Velodyne</td>
+                                <td>Points in cloud </td>
+                                <td id="points_count"></td>
+                            </tr>
+                            <tr>
+                                <td>DJI</td>
+                                <td>GPS </td>
+                                <td id="djigps"></td>
+                            </tr>
+                            <tr>
+                                <td>DJI</td>
+                                <td>IMU </td>
+                                <td id="djiimu"></td>
+                            </tr>
+                            <tr>
+                                <td>VectorNav</td>
+                                <td>GPS </td>
+                                <td id="vngps"></td>
+                            </tr>
+                            <tr>
+                                <td>Vectornav</td>
+                                <td>IMU </td>
+                                <td id="vnimu"></td>
+                            </tr>
+                         </table>
+            </div>
+            <div id="scanwidget">
+                <div id='viewer'></div>
+            </div>
+           
+        
       <!--  <img src="http://192.168.2.101:8080/stream?topic=/usb_cam/image_raw" style="height:200px">
         
         
     <!--    <div id="map" style="height:200px;width:200px"></div>
        <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8rByj1x8kSMDhbeUmcm7I1eIh7BmcM_U&callback=initMap"></script>-->
-    <form action="/downloads">
-    <input id="filesbutton" type="submit" value="show files" />
-</form>
-    <FORM>
-    <INPUT id="refreshbutton" TYPE="button" onClick="history.go(0)" VALUE="Refresh">
-    </FORM>
-         <table id="sensors">
-  <tr>
-    <th>Sensor</th>
-    <th>Topic</th>
-    <th>Value</th>
-  </tr>
-  <tr>
-    <td>Velodyne</td>
-    <td>Points in cloud </td>
-    <td id="points_count"></td>
-  </tr>
-  <tr>
-    <td>DJI</td>
-    <td>GPS </td>
-    <td id="djigps"></td>
-  </tr>
-  <tr>
-    <td>DJI</td>
-    <td>IMU </td>
-    <td id="djiimu"></td>
-  </tr>
-  <tr>
-    <td>VectorNav</td>
-    <td>GPS </td>
-    <td id="vngps"></td>
-  </tr>
-  <tr>
-    <td>Vectornav</td>
-    <td>GPS </td>
-    <td id="vnimu"></td>
-  </tr>
-</table>
     
-<table id="recstatus">
     
-    <tr>
-        <th>Record status</th>
-        <th id="recordingstatus"></th>
-    </table>
 
+    
+
+            </div>
     </body>
 </html>

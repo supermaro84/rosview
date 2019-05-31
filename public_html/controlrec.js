@@ -24,6 +24,15 @@
          }
          return color;
       };
+      function getStatus(status){
+          if (status==true){
+              fil="red";
+          }
+          else{
+              fil="yellow";
+          }
+          return fil;
+      }
 
     //List topics to subscribe
       var gpsDji = new ROSLIB.Topic({
@@ -68,7 +77,7 @@
       var cloud_v = new ROSLIB.Topic({
           ros:ros,
           name : '/velodyne_points_throttled'
-      });
+      });    
       
       cloud_v.subscribe(function(message){
          pointcl=message.width;
@@ -76,23 +85,33 @@
          document.getElementById("points_count").style.background = get_color(pointcl);
 
       });
-     
+      
+     var recording=0 
+     var recordStatus=new ROSLIB.Topic({
+          ros:ros,
+          name: '/recordstat'
+      });
+      
+      recordStatus.subscribe(function(message){
+       recording = message.data;
+       document.getElementById('recordingstatus').innerHTML=recording;
+       document.getElementById("recordingstatus").style.background = getStatus(recording);
+    });  
  
     function init() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
       url : websocket
-    });
+    })
     // Create the main viewer.
-    var viewer = new ROS3D.Viewer({
+     var viewer = new ROS3D.Viewer({
       divID : 'viewer',
       width : 700,
-      height : 680,
+      height : 400,
       antialias : false,
       loader : ROS3D.COLLADA_LOADER_2,
       background: '#A9A9A9'      
-    });
-   
+    }); 
     var orbit = new ROS3D.OrbitControls({
         scene : viewer.scene,
         camera : viewer.camera
@@ -119,8 +138,6 @@
         color:'green',
         size: 0.6
     });
-
-    
   }
       var map, infoWindow;
       function initMap() {

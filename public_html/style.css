@@ -11,18 +11,57 @@ body {
     background-color: #cccccc;
    
 }
+#container {
+    width:2000px;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+#logo {
+    background-color: black;
+    color: blue;
+    font-family: Helvetica;
+    text-align: center;
+    padding: 5px;
+}
 
 #cam_front {
     height:400px;
     left:0;
 }
-    #viewer {
-        float: right;
-    }
-    #map {
-        float:left;
-        height:30%;
-    }
+#viewer {
+    float: right;
+}
+#map {
+    float:left;
+    height:30%;
+}
+    
+#recstatus {
+    font-size: 26px;
+    padding: 10px;
+}
+
+#sensortable {
+    clear:both;
+    float:left;
+    width: 800px;
+    background-color: green;
+}
+#sensors {
+    font-family: sans-serif;
+    border: 10px;
+    width: 800px;
+    background: grey;
+    
+}
+
+#scanwidget {
+    float:left;
+    background-color: purple;
+}
+
 
 #front_l {
     position: fixed;
@@ -37,18 +76,7 @@ body {
 
 }
 
-#sensors {
-    position: static;
-    bottom:45%;
-    left:25%;
-    width: 55%;
-    height:5%;
-    border: 10px solid magenta;
-    padding: 5px;
-    margin: 2px;
-    background: grey;
 
-}
 
 #rear_l {
     position: fixed;
@@ -92,34 +120,21 @@ body {
 }
 #filesbutton {
     background-color: magenta; /* Green */
-    border: none;
-    position:relative;
-    top:15%;
-    left:25%;
+    float: left;
     color: white;
-    height: 20px;
-    width: 23%;
-    padding: 40px 40px;
+    padding: 10px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: 26px;
     
 }
 
 #refreshbutton {
     background-color: magenta; /* Green */
-    border: none;
-    position:relative;
-    top:15%;
-    left:0%;
+    float: left;
     color: white;
-    height: 20px;
-    width: 23%;
-    padding: 40px 40px;
+    padding: 10px;
     text-align: center;
-    vertical-align: middle;
     text-decoration: none;
-    display: inline-block;
     font-size: 26px;
 }
