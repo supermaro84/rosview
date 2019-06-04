@@ -37,7 +37,7 @@
     //List topics to subscribe
       var gpsDji = new ROSLIB.Topic({
             ros : ros,
-            name : '/dji_sdk/gps_position'
+            name : '/dji_gps_throttled'
             //messageType : 'sensor_msgs/Imu'
             });
         gpsDji.subscribe(function(message){
@@ -46,7 +46,7 @@
         });
       var gpsVN = new ROSLIB.Topic({
            ros:ros,
-           name:'/vectornav/GPS'
+           name:'/vn_gps_throttled'
        });  
        gpsDji.subscribe(function(message){
          pos="lat: "+message.latitude.toFixed(8)+" lon: "+message.longitude.toFixed(8)+" alt: "+message.altitude.toFixed(8);
@@ -55,7 +55,7 @@
         
       var imuDji = new ROSLIB.Topic({
             ros : ros,
-            name : '/dji_sdk/imu'
+            name : '/dji_imu_throttled'
             //messageType : 'sensor_msgs/Imu'
       });      
       imuDji.subscribe(function(message){
@@ -65,7 +65,7 @@
         
       var imuvn = new ROSLIB.Topic({
             ros : ros,
-            name : '/vectornav/IMU'
+            name : '/vn_imu_throttled'
             //messageType : 'sensor_msgs/Imu'
       });
       imuvn.subscribe(function(message){
@@ -76,7 +76,7 @@
       
       var cloud_v = new ROSLIB.Topic({
           ros:ros,
-          name : '/velodyne_points_throttled'
+          name : '/velodyne_points2_throttled'
       });    
       
       cloud_v.subscribe(function(message){
@@ -134,7 +134,7 @@
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/velodyne_points_throttled',
+        topic: '/velodyne_points2_throttled',
         color:'green',
         size: 0.6
     });
