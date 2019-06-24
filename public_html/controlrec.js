@@ -86,7 +86,7 @@
 
       });
       
-     var recording=0 
+     var recording=0; 
      var recordStatus=new ROSLIB.Topic({
           ros:ros,
           name: '/recordstat'
